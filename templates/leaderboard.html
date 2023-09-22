@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Classement des équipes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/leaderboard.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Classement des équipes</h1>
+        </div>
+        <input type="checkbox" id="nav_check" hidden>
+        <nav>
+            <div class="logo">
+                <h1>Classement des équipes</h1>
+            </div>
+            <ul>
+                <li>
+                    <a class="login" href="{{ url_for('login') }}">Login</a>
+                </li>
+                <li>
+                    {% if current_user.is_admin %}
+                    <a class="create_t" href="{{ url_for('create_team') }}">Create New Team</a>
+                    {% endif %}
+                </li>
+                <li>
+                    {% if current_user.is_admin %}
+                    <a class="edit_t">Edit team</a>
+                    {% endif %}
+                </li>
+                <li>
+                    {% if current_user.is_admin %}
+                    <a class="logout" href="{{ url_for('logout') }}">Logout</a>
+                    {% endif %}
+                </li>
+            </ul>
+        </nav>
+        <label for="nav_check" class="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </label>
+    </header>
+
+    <main class="table">
+        <section class="table__body">
+            <table class="background-table">
+                <thead>
+                    <tr>
+                        <th>Classement</th>
+                    </tr>
+                </thead>
+            </table>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rang</th>
+                        <th>Image</th>
+                        <th>Équipe</th>
+                        <th>Points</th>
+                        {% if current_user.is_admin %}
+                        <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in teams %}
+                    <tr>
+                        <td class="classement">{{ loop.index }}</td>
+                        <td><img src="{{ team.image_path }}" alt="{{ team.name }}" class="img-en-grand"></td>
+                        <td class="t-name">
+                            {{ team.name }}
+                            {% if loop.index == 1 %}
+                                <img src="{{ url_for('static', filename='images/winner.png') }}" alt="premier">
+                            {% endif %}
+                            {% if loop.index == 2 %}
+                                <img src="{{ url_for('static', filename='images/deuxieme.png') }}" alt="deuxieme">
+                            {% endif %}
+                            {% if loop.index == 3 %}
+                                <img src="{{ url_for('static', filename='images/troisieme.png') }}" alt="troisieme">
+                            {% endif %}
+                        </td>
+                        <td class="t-points">{{ team.points }}</td>
+                        {% if current_user.is_admin %}
+                        <td>
+                            <a class="modif" href="{{ url_for('update_points', team_id=team.id) }}">Modifier</a>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>
